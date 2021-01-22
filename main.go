@@ -6,18 +6,18 @@ import (
 	"github.com/CezarGarrido/book-api/infra"
 )
 
-
 func main() {
 	log.Println("Running api")
 
-	db, err := infra.NewPostgres("")
+	db, err := infra.NewPostgres(infra.NewPostgresDSN())
 	if err != nil {
 		panic(err)
 	}
 
-	err = infra.NewMigrate(db.SQL)
+	err = infra.NewMigratePostgres(db.SQL)
 	if err != nil {
-		panic(err)
+		log.Println(err.Error())
+		return
 	}
-
+	log.Println("All migrations Ok")
 }

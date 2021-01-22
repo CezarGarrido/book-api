@@ -1,4 +1,4 @@
 -- Table users
 
 
-DROP TABLE users;
+DROP TABLE public.users;

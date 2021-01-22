@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"context"
 	"errors"
 	"strings"
 	"time"
@@ -29,4 +30,12 @@ func (user *User) Validate() error {
 	}
 
 	return nil
+}
+
+type UserUsecase interface {
+	CreateUser(ctx context.Context, user User) (error, User)
+}
+
+type UserRepo interface {
+	Create(ctx context.Context, user *User) (*User, error)
 }
