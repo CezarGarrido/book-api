@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/CezarGarrido/book-api/delivery"
 	"github.com/CezarGarrido/book-api/entity"
 	"github.com/gorilla/mux"
 )
@@ -23,6 +24,7 @@ func NewUserDeliveryHTTP(r *mux.Router, userUsecase entity.UserUsecase) {
 		Name("create-user").Methods("POST")
 }
 
+// Create :
 func (userDelivery *UserDeliveryHTTP) Create(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
@@ -31,15 +33,24 @@ func (userDelivery *UserDeliveryHTTP) Create(w http.ResponseWriter, r *http.Requ
 
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Println("Error parse body", err.Error())
+		log.Println(err.Error())
+		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	err = json.Unmarshal(b, &newUser)
 	if err != nil {
-		log.Println("Error json unmarshal new account:", err.Error())
+		log.Println(err.Error())
+		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	userDelivery.userUsecase.CreateUser(ctx, newUser)
+	userCreated, err := userDelivery.userUsecase.CreateUser(ctx, newUser)
+	if err != nil {
+		log.Println(err.Error())
+		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	delivery.RespondWithJSON(w, userCreated, http.StatusOK)
 }

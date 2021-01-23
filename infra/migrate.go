@@ -11,7 +11,6 @@ import (
 )
 
 func NewMigratePostgres(db *sql.DB) error {
-	createDatabase()
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {
 		return err
@@ -29,7 +28,7 @@ func NewMigratePostgres(db *sql.DB) error {
 	return err
 }
 
-func createDatabase() {
+func createPostgresDatabase() {
 	db, err := sql.Open("postgres", newPgDSN())
 	if err != nil {
 		panic(err)

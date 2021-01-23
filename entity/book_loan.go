@@ -6,11 +6,14 @@ import (
 )
 
 type BookLoan struct {
-	BookID     int64
-	FromUserID int64
-	ToUserID   int64
-	LentAt     time.Time
-	ReturnedAt *time.Time
+	ID         int64      `json:"id"`
+	BookID     int64      `json:"book_id"`
+	FromUserID int64      `json:"from_user_id"`
+	ToUserID   int64      `json:"to_user_id"`
+	LentAt     time.Time  `json:"lent_at"`
+	ReturnedAt *time.Time `json:"returned_at"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
 }
 
 type BookLoanUsecase interface {

@@ -10,12 +10,16 @@ type userUsecase struct {
 	userRepo entity.UserRepo
 }
 
-func NewAccountUsecase(userRepo entity.UserRepo) *userUsecase {
+func NewUserUsecase(userRepo entity.UserRepo) *userUsecase {
 	return &userUsecase{
 		userRepo: userRepo,
 	}
 }
 
-func (userUsecase *userUsecase) Create(ctx context.Context, user *entity.User) (*entity.User, error) {
-	return userUsecase.userRepo.Create(ctx, user)
+func (userUsecase *userUsecase) CreateUser(ctx context.Context, user entity.User) (*entity.User, error) {
+	return userUsecase.userRepo.Create(ctx, &user)
+}
+
+func (userUsecase *userUsecase) FindAllUsers(ctx context.Context) ([]*entity.User, error) {
+	return nil, nil
 }
