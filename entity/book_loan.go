@@ -2,8 +2,12 @@ package entity
 
 import (
 	"context"
+	"errors"
 	"time"
 )
+
+var ErrBookLoanNotFoud = errors.New("Não foi possível recuperar o empréstimo")
+var ErrBookLoanIsReturned = errors.New("Livro já devolvido")
 
 type BookLoan struct {
 	ID         int64      `json:"id"`
@@ -18,9 +22,9 @@ type BookLoan struct {
 
 type BookLoanUsecase interface {
 	// Emprestar o livro
-	LendBook(user User, toUserID int64, bookID int64) (BookLoan, error)
+	LendBook(ctx context.Context, user User, toUserID int64, bookID int64) (*BookLoan, error)
 	// Devolver o livro
-	ReturnBook(user User, bookID int64) (BookLoan, error)
+	ReturnBook(ctx context.Context, user User, bookID int64) (*BookLoan, error)
 }
 
 type BookLoanRepo interface {
@@ -28,5 +32,7 @@ type BookLoanRepo interface {
 	Create(ctx context.Context, bookLoan *BookLoan) (*BookLoan, error)
 	// Atualiza o empréstimo como devolvido
 	// Atualiza a data da devolução
-	ReturnBook(ctx context.Context, bookID int64) (*BookLoan, error)
+	ReturnBook(ctx context.Context, bookLoan *BookLoan) (*BookLoan, error)
+	// Busca o emprestimo pelo id do livro
+	FindByFromUserAndBookID(ctx context.Context, fromUserID, bookID int64) (*BookLoan, error)
 }

@@ -29,10 +29,16 @@ func main() {
 	log.Println("Successful migrations")
 
 	userRepo := repository.NewUserPostgresRepo(db.SQL)
+	bookRepo := repository.NewBookPostgresRepo(db.SQL)
+	bookLoanRepo := repository.NewBookLoanPostgresRepo(db.SQL)
 
 	userUsecase := usecase.NewUserUsecase(userRepo)
+	bookUsecase := usecase.NewBookUsecase(bookRepo)
+	bookLoanUsecase := usecase.NewBookLoanUsecase(bookLoanRepo)
 
 	deliveryHTTP.NewUserDeliveryHTTP(router, userUsecase)
+	deliveryHTTP.NewBookDeliveryHTTP(router, bookUsecase, userUsecase)
+	deliveryHTTP.NewBookLoanDeliveryHTTP(router, bookLoanUsecase, bookUsecase, userUsecase)
 
 	log.Println("Server running on port :8089")
 

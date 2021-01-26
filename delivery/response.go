@@ -5,17 +5,10 @@ import (
 	"net/http"
 )
 
-type Response struct {
-	Code    int         `json:"code"`
-	Message interface{} `json:"message"`
-}
-
+// RespondWithJSON : Retorna um json
 func RespondWithJSON(w http.ResponseWriter, data interface{}, status int) {
 
-	payload, err := json.Marshal(Response{
-		Code:    status,
-		Message: data,
-	})
+	payload, err := json.Marshal(data)
 	if err != nil {
 		panic(err)
 	}

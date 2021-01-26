@@ -20,7 +20,7 @@ func NewUserPostgresRepo(db *sql.DB) *userPostgres {
 func (userPg *userPostgres) Create(ctx context.Context, user *entity.User) (*entity.User, error) {
 	query := `INSERT INTO public.users 
 	          (name, email, password, created_at, updated_at) 
-			  VALUES ($1,$2,$3,$4,$5) 
+			  VALUES ($1, $2, $3, $4, $5) 
 			  RETURNING id`
 
 	stmt, err := userPg.db.PrepareContext(ctx, query)
@@ -54,4 +54,42 @@ func (userPg *userPostgres) Create(ctx context.Context, user *entity.User) (*ent
 
 func (userPg *userPostgres) FindAllUsers(ctx context.Context) ([]*entity.User, error) {
 	return nil, nil
+}
+
+func (userPg *userPostgres) FindUserByID(ctx context.Context, id int64) (*entity.User, error) {
+	query := `SELECT id, "name", email, password, created_at, updated_at FROM public.users WHERE id=$1;`
+	rows, err := userPg.fetch(ctx, query, id)
+	if err != nil {
+		return nil, err
+	}
+	if len(rows) > 0 {
+		return rows[0], nil
+	}
+
+	return nil, entity.ErrBookLoanNotFoud
+}
+
+func (userPg *userPostgres) fetch(ctx context.Context, query string, args ...interface{}) ([]*entity.User, error) {
+	rows, err := userPg.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	payload := make([]*entity.User, 0)
+	for rows.Next() {
+		user := new(entity.User)
+		err := rows.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Email,
+			&user.Password,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		payload = append(payload, user)
+	}
+	return payload, nil
 }

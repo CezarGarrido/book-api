@@ -8,6 +8,8 @@ import (
 
 type userUsecase struct {
 	userRepo entity.UserRepo
+	bookLoanRepo entity.BookLoanRepo
+	bookRepo entity.BookRepo
 }
 
 func NewUserUsecase(userRepo entity.UserRepo) *userUsecase {
@@ -22,4 +24,8 @@ func (userUsecase *userUsecase) CreateUser(ctx context.Context, user entity.User
 
 func (userUsecase *userUsecase) FindAllUsers(ctx context.Context) ([]*entity.User, error) {
 	return nil, nil
+}
+
+func (userUsecase *userUsecase) FindUserByID(ctx context.Context, id int64) (*entity.User, error) {
+	return userUsecase.userRepo.FindUserByID(ctx, id)
 }
