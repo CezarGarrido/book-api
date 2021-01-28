@@ -12,21 +12,16 @@ import (
 )
 
 func main() {
-	log.Println("Starting API")
-
 	router := mux.NewRouter()
-
 	db, err := infra.NewPostgres(infra.NewPostgresDSN())
 	if err != nil {
 		panic(err)
 	}
-	log.Println("Running migrations")
 	err = infra.NewMigratePostgres(db.SQL)
 	if err != nil {
 		log.Println(err.Error())
 		return
 	}
-	log.Println("Successful migrations")
 
 	userRepo := repository.NewUserPostgresRepo(db.SQL)
 	bookRepo := repository.NewBookPostgresRepo(db.SQL)
@@ -36,7 +31,7 @@ func main() {
 	bookUsecase := usecase.NewBookUsecase(bookRepo)
 	bookLoanUsecase := usecase.NewBookLoanUsecase(bookLoanRepo)
 
-	deliveryHTTP.NewUserDeliveryHTTP(router, userUsecase)
+	deliveryHTTP.NewUserDeliveryHTTP(router, userUsecase, bookUsecase, bookLoanUsecase)
 	deliveryHTTP.NewBookDeliveryHTTP(router, bookUsecase, userUsecase)
 	deliveryHTTP.NewBookLoanDeliveryHTTP(router, bookLoanUsecase, bookUsecase, userUsecase)
 

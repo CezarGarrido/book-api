@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"time"
 
 	"github.com/CezarGarrido/book-api/entity"
@@ -55,10 +54,10 @@ func (bookLoanPg *bookLoanPostgres) ReturnBook(ctx context.Context, bookLoan *en
 
 	_, err = stmt.ExecContext(ctx, bookLoan.ReturnedAt, bookLoan.FromUserID, bookLoan.ID)
 	if err != nil {
-		return nil, err
+		return nil, entity.ErrBookLoanFailedReturn
 	}
 
-	return bookLoan, err
+	return bookLoan, nil
 }
 
 func (bookLoanPg *bookLoanPostgres) FindByFromUserAndBookID(ctx context.Context, fromUserID, bookID int64) (*entity.BookLoan, error) {
@@ -72,7 +71,19 @@ func (bookLoanPg *bookLoanPostgres) FindByFromUserAndBookID(ctx context.Context,
 		return rows[0], nil
 	}
 
-	return nil, errors.New("Empréstimo não encontrado")
+	return nil, entity.ErrBookLoanNotFoud
+}
+
+func (bookLoanPg *bookLoanPostgres) FindByToUserID(ctx context.Context, toUserID int64) ([]*entity.BookLoan, error) {
+	query := `SELECT id, book_id, from_user_id, to_user_id, lent_at, returned_at, created_at, updated_at
+	          FROM public.book_loans WHERE to_user_id=$1;`
+	return bookLoanPg.fetch(ctx, query, toUserID)
+}
+
+func (bookLoanPg *bookLoanPostgres) FindByFromUserID(ctx context.Context, fromUserID int64) ([]*entity.BookLoan, error) {
+	query := `SELECT id, book_id, from_user_id, to_user_id, lent_at, returned_at, created_at, updated_at
+	          FROM public.book_loans WHERE from_user_id=$1;`
+	return bookLoanPg.fetch(ctx, query, fromUserID)
 }
 
 func (bookLoanPg *bookLoanPostgres) fetch(ctx context.Context, query string, args ...interface{}) ([]*entity.BookLoan, error) {

@@ -42,3 +42,14 @@ func (bookLoanUsecase *bookLoanUsecase) ReturnBook(ctx context.Context, user ent
 	bookLoan.ReturnedAt = &now
 	return bookLoanUsecase.bookLoanRepo.ReturnBook(ctx, bookLoan)
 }
+
+// Devolver o livro
+func (bookLoanUsecase *bookLoanUsecase) FindByToUserID(ctx context.Context, toUserID int64) ([]*entity.BookLoan, error) {
+
+	return bookLoanUsecase.bookLoanRepo.FindByToUserID(ctx, toUserID)
+}
+
+func (bookLoanUsecase *bookLoanUsecase) FindByFromUserID(ctx context.Context, toUserID int64) ([]*entity.BookLoan, error) {
+
+	return bookLoanUsecase.bookLoanRepo.FindByFromUserID(ctx, toUserID)
+}

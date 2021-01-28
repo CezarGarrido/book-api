@@ -23,7 +23,7 @@ func NewMigratePostgres(db *sql.DB) error {
 	if err != nil {
 		return err
 	}
-	m.Steps(6)
+	m.Steps(8)
 
 	return err
 }

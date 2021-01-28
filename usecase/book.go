@@ -24,3 +24,7 @@ func (bookUsecase *bookUsecase) AddBookUserCollection(ctx context.Context, user 
 func (bookUsecase *bookUsecase) FindBookByID(ctx context.Context, bookID int64) (*entity.Book, error) {
 	return bookUsecase.bookRepo.FindByID(ctx, bookID)
 }
+
+func (bookUsecase *bookUsecase) FindBooksByUserID(ctx context.Context, userID int64) ([]*entity.Book, error) {
+	return bookUsecase.bookRepo.FindByUserID(ctx, userID)
+}

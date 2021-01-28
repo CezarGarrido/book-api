@@ -58,6 +58,11 @@ func (bookPg *bookPostgres) FindByID(ctx context.Context, bookID int64) (*entity
 	return nil, entity.ErrBookNotFoud
 }
 
+func (bookPg *bookPostgres) FindByUserID(ctx context.Context, userID int64) ([]*entity.Book, error) {
+	query := `SELECT id, user_id, title, pages, author_name, created_at, updated_at FROM public.books WHERE id=$1;`
+	return bookPg.fetch(ctx, query, userID)
+}
+
 func (bookPg *bookPostgres) fetch(ctx context.Context, query string, args ...interface{}) ([]*entity.Book, error) {
 	rows, err := bookPg.db.QueryContext(ctx, query, args...)
 	if err != nil {

@@ -40,7 +40,7 @@ func (bookLoanDelivery *BookLoanDeliveryHTTP) LendBook(w http.ResponseWriter, r 
 	user, err := bookLoanDelivery.userUsecase.FindUserByID(ctx, userID)
 	if err != nil {
 		log.Println(err.Error())
-		delivery.RespondWithJSON(w, "Não foi possível recuperar o usuário", http.StatusInternalServerError)
+		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

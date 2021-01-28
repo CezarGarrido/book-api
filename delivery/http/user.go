@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/CezarGarrido/book-api/delivery"
 	"github.com/CezarGarrido/book-api/entity"
@@ -13,15 +14,21 @@ import (
 
 // AccountDeliveryHTTP
 type UserDeliveryHTTP struct {
-	userUsecase entity.UserUsecase
+	userUsecase     entity.UserUsecase
+	bookUsecase     entity.BookUsecase
+	bookLoanUsecase entity.BookLoanUsecase
 }
 
-func NewUserDeliveryHTTP(r *mux.Router, userUsecase entity.UserUsecase) {
+func NewUserDeliveryHTTP(r *mux.Router, userUsecase entity.UserUsecase, bookUsecase entity.BookUsecase, bookLoanUsecase entity.BookLoanUsecase) {
 	handler := &UserDeliveryHTTP{
-		userUsecase: userUsecase,
+		userUsecase:     userUsecase,
+		bookUsecase:     bookUsecase,
+		bookLoanUsecase: bookLoanUsecase,
 	}
 	r.HandleFunc("/users", handler.Create).
 		Name("create-user").Methods("POST")
+	r.HandleFunc("/users/{user_id:[0-9]+}", handler.FindUserByID).
+		Name("create-user").Methods("GET")
 }
 
 // Create :
@@ -53,4 +60,45 @@ func (userDelivery *UserDeliveryHTTP) Create(w http.ResponseWriter, r *http.Requ
 	}
 
 	delivery.RespondWithJSON(w, userCreated, http.StatusOK)
+}
+
+// FindUserByID :
+func (userDelivery *UserDeliveryHTTP) FindUserByID(w http.ResponseWriter, r *http.Request) {
+
+	ctx := r.Context()
+
+	userID, _ := strconv.ParseInt(mux.Vars(r)["user_id"], 10, 64)
+
+	user, err := userDelivery.userUsecase.FindUserByID(ctx, userID)
+	if err != nil {
+		log.Println(err.Error())
+		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	lentBooks, err := userDelivery.bookLoanUsecase.FindByFromUserID(ctx, user.ID)
+	if err != nil {
+		log.Println(err.Error())
+		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	user.LentBooks = lentBooks
+
+	borrowedBooks, err := userDelivery.bookLoanUsecase.FindByToUserID(ctx, user.ID)
+	if err != nil {
+		log.Println(err.Error())
+		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	user.BorrowedBooks = borrowedBooks
+
+	collection, err := userDelivery.bookUsecase.FindBooksByUserID(ctx, user.ID)
+	if err != nil {
+		log.Println(err.Error())
+		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	user.Collection = collection
+
+	delivery.RespondWithJSON(w, user, http.StatusOK)
 }

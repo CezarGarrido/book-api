@@ -9,14 +9,15 @@ import (
 var ErrDuplicatedEmail = errors.New("Email já cadastrado")
 var ErrUserNotFoud = errors.New("Não foi possível recuperar o usuário")
 
+// Represents the system user
 type User struct {
-	ID            int64       `json:"id"`
-	Name          string      `json:"name"`
-	Email         string      `json:"email"`
-	Password      string      `json:"password"`
-	Collection    []*Book     `json:"collection"`
-	LentBooks     []*BookLoan `json:"lent_books"`
-	BorrowedBooks []*BookLoan `json:"borrowed_books"`
+	ID            int64       `json:"id"` // User id
+	Name          string      `json:"name"` // User name - required
+	Email         string      `json:"email"` // User email - required - unique
+	Password      string      `json:"password"` // User password
+	Collection    []*Book     `json:"collection"` // All user books
+	LentBooks     []*BookLoan `json:"lent_books"` // All books that were loaned to other users
+	BorrowedBooks []*BookLoan `json:"borrowed_books"` // All books that were borrowed from other users
 	CreatedAt     time.Time   `json:"created_at"`
 	UpdatedAt     time.Time   `json:"updated_at"`
 }
