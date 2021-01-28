@@ -32,14 +32,12 @@ func TestUsecaseCreateUser(t *testing.T) {
 
 	AssertEqual(t, userCreated.Name, userToCreate.Name)
 	AssertEqual(t, userCreated.Email, userToCreate.Email)
-	AssertEqual(t, userCreated.Password, userToCreate.Password)
 }
 
 func newUser() entity.User {
 	return entity.User{
 		Name:     "User test",
 		Email:    "user@mail.com",
-		Password: "102030@@",
 	}
 }
 

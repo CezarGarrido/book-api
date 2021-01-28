@@ -25,9 +25,9 @@ func NewUserDeliveryHTTP(r *mux.Router, userUsecase entity.UserUsecase, bookUsec
 		bookUsecase:     bookUsecase,
 		bookLoanUsecase: bookLoanUsecase,
 	}
-	r.HandleFunc("/users", handler.Create).
+	r.HandleFunc("/user", handler.Create).
 		Name("create-user").Methods("POST")
-	r.HandleFunc("/users/{user_id:[0-9]+}", handler.FindUserByID).
+	r.HandleFunc("/user/{user_id:[0-9]+}", handler.FindUserByID).
 		Name("create-user").Methods("GET")
 }
 

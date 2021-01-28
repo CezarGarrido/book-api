@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/CezarGarrido/book-api/delivery"
 	"github.com/CezarGarrido/book-api/entity"
@@ -25,25 +24,21 @@ func NewBookLoanDeliveryHTTP(r *mux.Router, bookLoanUsecase entity.BookLoanUseca
 		bookUsecase:     bookUsecase,
 		userUsecase:     userUsecase,
 	}
-	r.HandleFunc("/users/{user_id:[0-9]+}/books/loans", handler.LendBook).
+	r.HandleFunc("/book/lend", handler.LendBook).
 		Name("create-loan").Methods("POST")
 
-	r.HandleFunc("/users/{user_id:[0-9]+}/books/loans/return", handler.ReturnBook).
+	r.HandleFunc("/book/lend/return", handler.ReturnBook).
 		Name("return-book-loan").Methods("PUT")
+}
+
+type NewBookLoan struct {
+	LoggedUserID int64 `json:"logged_user_id"`
+	entity.BookLoan
 }
 
 // Emprestar o livro
 func (bookLoanDelivery *BookLoanDeliveryHTTP) LendBook(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-
-	userID, _ := strconv.ParseInt(mux.Vars(r)["user_id"], 10, 64)
-	user, err := bookLoanDelivery.userUsecase.FindUserByID(ctx, userID)
-	if err != nil {
-		log.Println(err.Error())
-		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println(err.Error())
@@ -51,12 +46,19 @@ func (bookLoanDelivery *BookLoanDeliveryHTTP) LendBook(w http.ResponseWriter, r 
 		return
 	}
 
-	var newBookLoan entity.BookLoan
+	var newBookLoan NewBookLoan
 
 	err = json.Unmarshal(b, &newBookLoan)
 	if err != nil {
 		log.Println(err.Error())
 		delivery.RespondWithJSON(w, "Erro ao decodificar json", http.StatusInternalServerError)
+		return
+	}
+
+	user, err := bookLoanDelivery.userUsecase.FindUserByID(ctx, newBookLoan.LoggedUserID)
+	if err != nil {
+		log.Println(err.Error())
+		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -88,14 +90,6 @@ func (bookLoanDelivery *BookLoanDeliveryHTTP) LendBook(w http.ResponseWriter, r 
 func (bookLoanDelivery *BookLoanDeliveryHTTP) ReturnBook(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	userID, _ := strconv.ParseInt(mux.Vars(r)["user_id"], 10, 64)
-	user, err := bookLoanDelivery.userUsecase.FindUserByID(ctx, userID)
-	if err != nil {
-		log.Println(err.Error())
-		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println(err.Error())
@@ -103,12 +97,18 @@ func (bookLoanDelivery *BookLoanDeliveryHTTP) ReturnBook(w http.ResponseWriter, 
 		return
 	}
 
-	var newBookLoan entity.BookLoan
+	var newBookLoan NewBookLoan
 
 	err = json.Unmarshal(b, &newBookLoan)
 	if err != nil {
 		log.Println(err.Error())
 		delivery.RespondWithJSON(w, "Erro ao decodificar json", http.StatusInternalServerError)
+		return
+	}
+	user, err := bookLoanDelivery.userUsecase.FindUserByID(ctx, newBookLoan.LoggedUserID)
+	if err != nil {
+		log.Println(err.Error())
+		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

@@ -2,11 +2,9 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/CezarGarrido/book-api/delivery"
 	"github.com/CezarGarrido/book-api/entity"
@@ -24,8 +22,13 @@ func NewBookDeliveryHTTP(r *mux.Router, bookUsecase entity.BookUsecase, userUsec
 		bookUsecase: bookUsecase,
 		userUsecase: userUsecase,
 	}
-	r.HandleFunc("/users/{user_id:[0-9]+}/books", handler.AddBookUserCollection).
+	r.HandleFunc("/book", handler.AddBookUserCollection).
 		Name("add-book-collection").Methods("POST")
+}
+
+type NewBook struct {
+	LoggedUserID int64 `json:"logged_user_id"`
+	entity.Book
 }
 
 // AddBookUserCollection :
@@ -33,17 +36,6 @@ func (BookDelivery *BookDeliveryHTTP) AddBookUserCollection(w http.ResponseWrite
 
 	ctx := r.Context()
 
-	userID, _ := strconv.ParseInt(mux.Vars(r)["user_id"], 10, 64)
-	log.Println(userID)
-
-	user, err := BookDelivery.userUsecase.FindUserByID(ctx, userID)
-	if err != nil {
-		log.Println(err.Error())
-		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	fmt.Println(user)
-	
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println(err.Error())
@@ -51,7 +43,7 @@ func (BookDelivery *BookDeliveryHTTP) AddBookUserCollection(w http.ResponseWrite
 		return
 	}
 
-	var newBook entity.Book
+	var newBook NewBook
 
 	err = json.Unmarshal(b, &newBook)
 	if err != nil {
@@ -60,7 +52,18 @@ func (BookDelivery *BookDeliveryHTTP) AddBookUserCollection(w http.ResponseWrite
 		return
 	}
 
-	bookCreated, err := BookDelivery.bookUsecase.AddBookUserCollection(ctx, *user, newBook)
+	user, err := BookDelivery.userUsecase.FindUserByID(ctx, newBook.LoggedUserID)
+	if err != nil {
+		log.Println(err.Error())
+		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	bookCreated, err := BookDelivery.bookUsecase.AddBookUserCollection(ctx, *user, entity.Book{
+		Title:  newBook.Title,
+		Pages:  newBook.Pages,
+		UserID: newBook.LoggedUserID,
+	})
 	if err != nil {
 		log.Println(err.Error())
 		delivery.RespondWithJSON(w, err.Error(), http.StatusInternalServerError)

@@ -12,12 +12,12 @@ var ErrBookLoanFailedReturn = errors.New("Não foi possível devolver o livro")
 
 // BookLoan represents a loan for a book
 type BookLoan struct {
-	ID         int64      `json:"id"`           // Loan id
-	BookID     int64      `json:"book_id"`      // Book id
-	FromUserID int64      `json:"from_user_id"` //FromUserID represents the id of the user who is lending a book
-	ToUserID   int64      `json:"to_user_id"`   // Represents the id of the user who is going to borrow the book
-	LentAt     time.Time  `json:"lent_at"`      // Represents the date the loan was made
-	ReturnedAt *time.Time `json:"returned_at"`  // Represents the date the book was returned - If the value is equal to null, it means that the book has not yet been returned
+	ID         int64      `json:"id"`          // Loan id
+	BookID     int64      `json:"book_id"`     // Book id
+	FromUserID int64      `json:"from_user"`   // FromUserID represents the id of the user who is lending a book
+	ToUserID   int64      `json:"to_user"`     // Represents the id of the user who is going to borrow the book
+	LentAt     time.Time  `json:"lent_at"`     // Represents the date the loan was made
+	ReturnedAt *time.Time `json:"returned_at"` // Represents the date the book was returned - If the value is equal to null, it means that the book has not yet been returned
 	CreatedAt  time.Time  `json:"created_at"`
 	UpdatedAt  time.Time  `json:"updated_at"`
 }

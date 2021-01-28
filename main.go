@@ -32,8 +32,8 @@ func main() {
 	bookLoanUsecase := usecase.NewBookLoanUsecase(bookLoanRepo)
 
 	deliveryHTTP.NewUserDeliveryHTTP(router, userUsecase, bookUsecase, bookLoanUsecase)
-	deliveryHTTP.NewBookDeliveryHTTP(router, bookUsecase, userUsecase)
 	deliveryHTTP.NewBookLoanDeliveryHTTP(router, bookLoanUsecase, bookUsecase, userUsecase)
+	deliveryHTTP.NewBookDeliveryHTTP(router, bookUsecase, userUsecase)
 
 	log.Println("Server running on port :8089")
 
