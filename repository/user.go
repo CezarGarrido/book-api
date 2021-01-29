@@ -51,10 +51,6 @@ func (userPg *userPostgres) Create(ctx context.Context, user *entity.User) (*ent
 	return user, nil
 }
 
-func (userPg *userPostgres) FindAllUsers(ctx context.Context) ([]*entity.User, error) {
-	return nil, nil
-}
-
 func (userPg *userPostgres) FindUserByID(ctx context.Context, id int64) (*entity.User, error) {
 	query := `SELECT id, "name", email, created_at, updated_at FROM public.users WHERE id=$1;`
 	rows, err := userPg.fetch(ctx, query, id)
