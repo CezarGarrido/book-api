@@ -23,6 +23,17 @@ func main() {
 		return
 	}
 
+	dbTests, err := infra.NewPostgres(infra.NewPostgresTestDSN())
+	if err != nil {
+		panic(err)
+	}
+
+	err = infra.NewMigratePostgres(dbTests.SQL)
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
+
 	userRepo := repository.NewUserPostgresRepo(db.SQL)
 	bookRepo := repository.NewBookPostgresRepo(db.SQL)
 	bookLoanRepo := repository.NewBookLoanPostgresRepo(db.SQL)

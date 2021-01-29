@@ -11,13 +11,12 @@ var ErrBookCreate = errors.New("Não foi possível inserir o livro")
 
 // Book represents the user's book structure
 type Book struct {
-	ID         int64     `json:"id"`          // Book id
-	UserID     int64     `json:"user_id"`     // User ID
-	Title      string    `json:"title"`       // Book's title - required
-	Pages      int       `json:"pages"`       // Number of pages - optional
-	AuthorName string    `json:"author_name"` // Author's name - optional
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
+	ID        int64     `json:"id"`      // Book id
+	UserID    int64     `json:"user_id"` // User ID
+	Title     string    `json:"title"`   // Book's title - required
+	Pages     int       `json:"pages"`   // Number of pages - optional
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type BookUsecase interface {

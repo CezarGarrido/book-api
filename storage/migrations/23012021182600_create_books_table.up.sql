@@ -8,5 +8,5 @@ CREATE TABLE public.books (
 	"pages" integer NOT NULL,
 	"created_at" timestamp NOT NULL DEFAULT current_timestamp,
     "updated_at" timestamp NOT NULL,
-    FOREIGN KEY ("user_id") REFERENCES public.users("id") ON DELETE RESTRICT
+    FOREIGN KEY ("user_id") REFERENCES public.users("id") ON DELETE NO ACTION
 );

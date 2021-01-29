@@ -34,6 +34,7 @@ func createPostgresDatabase() {
 		panic(err)
 	}
 	db.Exec("create database " + dbname)
+	db.Exec("create database " + dbTestName)
 	defer db.Close()
 }
 

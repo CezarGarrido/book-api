@@ -18,7 +18,7 @@ func NewBookPostgresRepo(db *sql.DB) *bookPostgres {
 
 func (bookPg *bookPostgres) Create(ctx context.Context, book *entity.Book) (*entity.Book, error) {
 	query := `INSERT INTO public.books 
-	          (user_id, title, pages, author_name, created_at, updated_at) 
+	          (user_id, title, pages, created_at, updated_at) 
 			  VALUES ($1, $2, $3, $4, $5, $6) 
 			  RETURNING id`
 
@@ -37,7 +37,6 @@ func (bookPg *bookPostgres) Create(ctx context.Context, book *entity.Book) (*ent
 		book.UserID,
 		book.Title,
 		book.Pages,
-		book.AuthorName,
 		book.CreatedAt,
 		book.UpdatedAt,
 	).Scan(&book.ID)
@@ -46,7 +45,7 @@ func (bookPg *bookPostgres) Create(ctx context.Context, book *entity.Book) (*ent
 }
 
 func (bookPg *bookPostgres) FindByID(ctx context.Context, bookID int64) (*entity.Book, error) {
-	query := `SELECT id, user_id, title, pages, author_name, created_at, updated_at FROM public.books WHERE id=$1;`
+	query := `SELECT id, user_id, title, pages, created_at, updated_at FROM public.books WHERE id=$1;`
 	rows, err := bookPg.fetch(ctx, query, bookID)
 	if err != nil {
 		return nil, err
@@ -59,7 +58,7 @@ func (bookPg *bookPostgres) FindByID(ctx context.Context, bookID int64) (*entity
 }
 
 func (bookPg *bookPostgres) FindByUserID(ctx context.Context, userID int64) ([]*entity.Book, error) {
-	query := `SELECT id, user_id, title, pages, author_name, created_at, updated_at FROM public.books WHERE id=$1;`
+	query := `SELECT id, user_id, title, pages, created_at, updated_at FROM public.books WHERE id=$1;`
 	return bookPg.fetch(ctx, query, userID)
 }
 
@@ -77,7 +76,6 @@ func (bookPg *bookPostgres) fetch(ctx context.Context, query string, args ...int
 			&book.UserID,
 			&book.Title,
 			&book.Pages,
-			&book.AuthorName,
 			&book.CreatedAt,
 			&book.UpdatedAt,
 		)
