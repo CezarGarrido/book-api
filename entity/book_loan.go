@@ -23,26 +23,25 @@ type BookLoan struct {
 }
 
 type BookLoanUsecase interface {
-	// Emprestar o livro
+	// Lend Book
 	LendBook(ctx context.Context, user User, toUserID int64, bookID int64) (*BookLoan, error)
-	// Devolver o livro
+	// Return book
 	ReturnBook(ctx context.Context, user User, bookID int64) (*BookLoan, error)
-
+	// return the books I lent to someone
 	FindByFromUserID(ctx context.Context, fromUserID int64) ([]*BookLoan, error)
-
+	// Return books I borrowed from someone
 	FindByToUserID(ctx context.Context, toUserID int64) ([]*BookLoan, error)
 }
 
 type BookLoanRepo interface {
-	// Criar o livro no banco de dados
+	// Create loan in the database
 	Create(ctx context.Context, bookLoan *BookLoan) (*BookLoan, error)
-	// Atualiza o empréstimo como devolvido
-	// Atualiza a data da devolução
+	// Return book
 	ReturnBook(ctx context.Context, bookLoan *BookLoan) (*BookLoan, error)
-	// Busca o emprestimo pelo id do livro
+	// Find by book ID
 	FindByFromUserAndBookID(ctx context.Context, fromUserID, bookID int64) (*BookLoan, error)
-
+	// Find by from user ID
 	FindByFromUserID(ctx context.Context, fromUserID int64) ([]*BookLoan, error)
-
+	// Find by to user ID
 	FindByToUserID(ctx context.Context, fromUserID int64) ([]*BookLoan, error)
 }
