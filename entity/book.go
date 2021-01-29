@@ -20,15 +20,19 @@ type Book struct {
 }
 
 type BookUsecase interface {
-	// Add bookm 
+	// Add book in user collection
 	AddBookUserCollection(ctx context.Context, user User, book Book) (*Book, error)
+	// Return book by ID
 	FindBookByID(ctx context.Context, bookID int64) (*Book, error)
+	// Find all user books
 	FindBooksByUserID(ctx context.Context, userID int64) ([]*Book, error)
 }
 
 type BookRepo interface {
-	// Criar Livro no banco de dados
+	// Create book in database
 	Create(ctx context.Context, book *Book) (*Book, error)
+	// Return book by ID
 	FindByID(ctx context.Context, bookID int64) (*Book, error)
+	// Find all user books
 	FindByUserID(ctx context.Context, userID int64) ([]*Book, error)
 }

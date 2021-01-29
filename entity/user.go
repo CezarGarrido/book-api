@@ -21,13 +21,15 @@ type User struct {
 	UpdatedAt     time.Time   `json:"updated_at"`
 }
 type UserUsecase interface {
+	// Create new User
 	CreateUser(ctx context.Context, user User) (*User, error)
-	FindAllUsers(ctx context.Context) ([]*User, error)
+	// Return user By ID
 	FindUserByID(ctx context.Context, id int64) (*User, error)
 }
 
 type UserRepo interface {
+	// Create new User
 	Create(ctx context.Context, user *User) (*User, error)
-	FindAllUsers(ctx context.Context) ([]*User, error)
+	// Return user By ID
 	FindUserByID(ctx context.Context, id int64) (*User, error)
 }

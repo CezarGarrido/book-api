@@ -36,7 +36,7 @@ type NewBookLoan struct {
 	entity.BookLoan
 }
 
-// Emprestar o livro
+// Lend book
 func (bookLoanDelivery *BookLoanDeliveryHTTP) LendBook(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	b, err := ioutil.ReadAll(r.Body)
@@ -86,7 +86,7 @@ func (bookLoanDelivery *BookLoanDeliveryHTTP) LendBook(w http.ResponseWriter, r 
 	delivery.RespondWithJSON(w, bookLoanCreated, http.StatusOK)
 }
 
-// Devolver o livro
+// Return Book
 func (bookLoanDelivery *BookLoanDeliveryHTTP) ReturnBook(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 

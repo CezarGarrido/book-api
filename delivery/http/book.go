@@ -31,7 +31,7 @@ type NewBook struct {
 	entity.Book
 }
 
-// AddBookUserCollection :
+// AddBookUserCollection 
 func (BookDelivery *BookDeliveryHTTP) AddBookUserCollection(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()

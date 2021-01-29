@@ -8,7 +8,7 @@
 
 ### Banco de dados
 
-Acessar o arquivo infra/database.go
+Acessar o arquivo infra/database.go.
 Alterar as configurações para conexão com banco postgres.
 
 

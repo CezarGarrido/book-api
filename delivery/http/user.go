@@ -31,7 +31,7 @@ func NewUserDeliveryHTTP(r *mux.Router, userUsecase entity.UserUsecase, bookUsec
 		Name("create-user").Methods("GET")
 }
 
-// Create :
+// Create new User
 func (userDelivery *UserDeliveryHTTP) Create(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
@@ -62,7 +62,7 @@ func (userDelivery *UserDeliveryHTTP) Create(w http.ResponseWriter, r *http.Requ
 	delivery.RespondWithJSON(w, userCreated, http.StatusOK)
 }
 
-// FindUserByID :
+// FindUserByID, return user by ID
 func (userDelivery *UserDeliveryHTTP) FindUserByID(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
