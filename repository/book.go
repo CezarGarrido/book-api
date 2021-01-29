@@ -19,7 +19,7 @@ func NewBookPostgresRepo(db *sql.DB) *bookPostgres {
 func (bookPg *bookPostgres) Create(ctx context.Context, book *entity.Book) (*entity.Book, error) {
 	query := `INSERT INTO public.books 
 	          (user_id, title, pages, created_at, updated_at) 
-			  VALUES ($1, $2, $3, $4, $5, $6) 
+			  VALUES ($1, $2, $3, $4, $5) 
 			  RETURNING id`
 
 	stmt, err := bookPg.db.PrepareContext(ctx, query)

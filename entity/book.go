@@ -20,7 +20,7 @@ type Book struct {
 }
 
 type BookUsecase interface {
-	// Criar livro
+	// Add bookm 
 	AddBookUserCollection(ctx context.Context, user User, book Book) (*Book, error)
 	FindBookByID(ctx context.Context, bookID int64) (*Book, error)
 	FindBooksByUserID(ctx context.Context, userID int64) ([]*Book, error)
